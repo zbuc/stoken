@@ -15,6 +15,12 @@ include_HEADERS		= src/stoken.h
 noinst_HEADERS		= src/common.h src/securid.h src/stoken-internal.h
 pkgconfig_DATA		= stoken.pc
 
+if LOCAL_TOMCRYPT
+libstoken_la_SOURCES	+= src/tomcrypt/aes.c src/tomcrypt/rng_get_bytes.c
+noinst_HEADERS		+= src/tomcrypt/aes_tab.c src/tomcrypt/crypto.h \
+			   src/tomcrypt/crypto-internal.h
+endif
+
 bin_PROGRAMS		= stoken
 stoken_SOURCES		= src/cli.c src/common.c
 stoken_LDADD		= $(LDADD) libstoken.la

@@ -26,9 +26,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <tomcrypt.h>
 #include <sys/time.h>
 
+#include TOMCRYPT_HDR
 #include "securid.h"
 
 static void aes128_ecb_encrypt(const uint8_t *key, const uint8_t *in,

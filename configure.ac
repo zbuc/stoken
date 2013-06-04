@@ -99,9 +99,8 @@ fi
 
 AM_CONDITIONAL([ENABLE_GUI], [test $enable_gui = yes])
 
-# libtomcrypt
-# Some distributions add a libtomcrypt.pc file, but it isn't in the upstream
-# libtomcrypt distribution so we can't count on it.
+# libtomcrypt: if we have a pkg-config capable version installed, use it;
+# otherwise use the local copy
 
 tomcrypt_pkg=no
 
@@ -109,28 +108,34 @@ if test "x$PKG_CONFIG" != x; then
 	PKG_CHECK_EXISTS([libtomcrypt], [tomcrypt_pkg=yes], [])
 fi
 
-if test $tomcrypt_pkg = no; then
-	AC_SUBST(TOMCRYPT_LIBS, [-ltomcrypt])
-	AC_SUBST(LIBTOMCRYPT_PC, [])
-	EXTRA_PC_LIBS="$EXTRA_PC_LIBS -ltomcrypt"
-else
-	AC_SUBST(LIBTOMCRYPT_PC, [libtomcrypt])
+if test $tomcrypt_pkg = yes; then
+	# note: this may be unrecoverable if it fails
 	PKG_CHECK_MODULES([TOMCRYPT], libtomcrypt)
+
+	saved_LIBS="$LIBS"
+	saved_CFLAGS="$CFLAGS"
+	LIBS="$LIBS $TOMCRYPT_LIBS"
+	CFLAGS="$CFLAGS $TOMCRYPT_CFLAGS"
+
+	AC_MSG_CHECKING([if libtomcrypt is usable])
+	AC_TRY_LINK([#include <tomcrypt.h>],
+		[rijndael_ecb_encrypt(NULL,NULL,NULL);],
+		[AC_MSG_RESULT([yes])],
+		[AC_MSG_RESULT([no])
+		 tomcrypt_pkg=no])
+
+	LIBS="$saved_LIBS"
+	CFLAGS="$saved_CFLAGS"
 fi
 
-saved_LIBS="$LIBS"
-saved_CFLAGS="$CFLAGS"
-LIBS="$LIBS $TOMCRYPT_LIBS"
-CFLAGS="$CFLAGS $TOMCRYPT_CFLAGS"
-
-AC_MSG_CHECKING([if libtomcrypt is usable])
-AC_TRY_LINK([#include <tomcrypt.h>],
-	[rijndael_ecb_encrypt(NULL,NULL,NULL);],
-	[AC_MSG_RESULT([yes])],
-	[AC_MSG_FAILURE([unable to link libtomcrypt test program])])
-
-LIBS="$saved_LIBS"
-CFLAGS="$saved_CFLAGS"
+AM_CONDITIONAL([LOCAL_TOMCRYPT], [test $tomcrypt_pkg = no])
+AM_COND_IF([LOCAL_TOMCRYPT],
+	[AC_SUBST(TOMCRYPT_CFLAGS, [])
+	 AC_SUBST(TOMCRYPT_LIBS, [])
+	 AC_DEFINE([TOMCRYPT_HDR], ["tomcrypt/crypto.h"], [tomcrypt header name])
+	 AC_SUBST(LIBTOMCRYPT_PC, [])],
+	[AC_DEFINE([TOMCRYPT_HDR], [<tomcrypt.h>], [tomcrypt header name])
+	 AC_SUBST(LIBTOMCRYPT_PC, [libtomcrypt])])
 
 AC_SUBST(EXTRA_PC_LIBS, [$EXTRA_PC_LIBS])
 
