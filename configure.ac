@@ -104,7 +104,10 @@ AM_CONDITIONAL([ENABLE_GUI], [test $enable_gui = yes])
 
 tomcrypt_pkg=no
 
-if test "x$PKG_CONFIG" != x; then
+AC_ARG_WITH([libtomcrypt],
+	AS_HELP_STRING([--without-libtomcrypt],
+	[build without system libtomcrypt library [default=check]]))
+if test "x$PKG_CONFIG" != "x" -a "x$with_libtomcrypt" != "xno"; then
 	PKG_CHECK_EXISTS([libtomcrypt], [tomcrypt_pkg=yes], [])
 fi
 
