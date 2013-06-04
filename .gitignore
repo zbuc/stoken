@@ -11,10 +11,6 @@ configure
 depcomp
 install-sh
 missing
-src/.deps/
-src/.dirstamp
-src/*.lo
-src/.libs/
 stamp-h1
 autom4te.cache/
 .libs/
@@ -26,11 +22,16 @@ ltmain.sh
 libtool
 
 # objects
-src/*.o
 stoken
 stoken-gui
 stoken-*.tar.gz
 stoken.pc
+
+# stuff under src/
+*.o
+*.lo
+.deps/
+.dirstamp
 
 # scratch files
 .*.sw*
