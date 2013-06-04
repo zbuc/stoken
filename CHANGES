@@ -1,3 +1,12 @@
+v0.3 - 2013/06/03
+
+ - Fix build failure on kfreebsd
+
+ - Bundle local copy of libtomcrypt AES and RNG functions, for
+   distributions that don't have libtomcrypt
+
+ - Don't strip stoken / stoken-gui binaries by default
+
 v0.2 - 2013/05/18
 
  - Fix a couple of problems seen when manipulating tokens tied to a device
