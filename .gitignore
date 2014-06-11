@@ -31,6 +31,7 @@ libtool
 /stoken-gui
 /stoken-*.tar.gz
 /stoken.pc
+python/build/
 
 # scratch files
 .*.sw*
