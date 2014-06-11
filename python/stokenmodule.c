@@ -7,7 +7,7 @@ static PyObject*
 get_code(PyObject* self, PyObject* args, PyObject *keywds)
 {
 	struct stoken_ctx *ctx = stoken_new();
-    char* token = "252503079680743142131101346153112272336172670304467711744173124152503452716757206";
+	char* token = "252503079680743142131101346153112272336172670304467711744173124152503452716757206";
 	char* deviceid = "123";
 	char* password = "test";
 	char* pin = "6666";
@@ -18,12 +18,12 @@ get_code(PyObject* self, PyObject* args, PyObject *keywds)
 	if (!PyArg_ParseTupleAndKeywords(args, keywds, "|ssss", kwlist, &token, &deviceid, &password, &pin))
 		return NULL;
 
-    rc = stoken_import_string(ctx, token);
-    if (rc)
+	rc = stoken_import_string(ctx, token);
+	if (rc)
 	{
 		char *res;
 		sprintf(res, "stoken_import_string returned %d\n", rc);
-        PyErr_SetString(StokenError, res);
+		PyErr_SetString(StokenError, res);
 	}
 
 	rc = stoken_decrypt_seed(ctx, password, deviceid);
@@ -47,8 +47,8 @@ get_code(PyObject* self, PyObject* args, PyObject *keywds)
  
 static PyMethodDef StokenMethods[] =
 {
-     {"get_code", (PyCFunction)get_code, METH_VARARGS | METH_KEYWORDS, "Generate a new RSA token. **kwargs specifies configuration, otherwise default test values are used"},
-     {NULL, NULL, 0, NULL}
+	 {"get_code", (PyCFunction)get_code, METH_VARARGS | METH_KEYWORDS, "Generate a new RSA token. **kwargs specifies configuration, otherwise default test values are used"},
+	 {NULL, NULL, 0, NULL}
 };
  
 PyMODINIT_FUNC
